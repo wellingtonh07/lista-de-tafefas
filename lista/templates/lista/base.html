@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Minha Lista de Tarefas{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <div class="container mt-5">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="{% url 'task_list' %}">Lista de Tarefas</a>
+            <ul class="navbar-nav">
+                {% if user.is_authenticated %}
+                    <!-- Exibe apenas o link para logout -->
+                    <li class="nav-item">
+                        <form method="POST" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn nav-link">Sair</button>
+                        </form>
+                    </li>
+                {% else %}
+                    <!-- Exibe os links de criar conta e entrar se o usuário não estiver logado -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'signup' %}">Criar Conta</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Entrar</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+
+        {% if user.is_authenticated %}
+            <!-- Exibe a mensagem de boas-vindas com o nome do usuário fora da navbar -->
+            <p class="mt-4">Bem-vindo, <strong>{{ user.first_name|default:user.username }}</strong>!</p>
+        {% endif %}
+
+        <hr>
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
